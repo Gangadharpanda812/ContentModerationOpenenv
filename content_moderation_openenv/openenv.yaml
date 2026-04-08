@@ -1,0 +1,81 @@
+# port: 8000
+
+name: content-moderation-env
+version: "1.0.0"
+description: >
+  A real-world content moderation environment where AI agents must triage,
+  classify, and take action on user-generated content (UGC) across a simulated
+  social platform. Agents review posts, apply policy labels, escalate edge cases,
+  and manage a live moderation queue — mirroring workflows used by trust & safety
+  teams at scale.
+author: OpenEnv Submission
+license: MIT
+tags:
+  - openenv
+  - content-moderation
+  - trust-and-safety
+  - nlp
+  - real-world
+
+tasks:
+  - id: basic_triage
+    name: Basic Content Triage
+    difficulty: easy
+    description: >
+      Classify a queue of 10 posts into SAFE / VIOLATING / BORDERLINE.
+      Grader checks label accuracy against ground-truth annotations.
+
+  - id: policy_enforcement
+    name: Policy Enforcement with Actions
+    difficulty: medium
+    description: >
+      For each post, choose the correct enforcement action: APPROVE, REMOVE,
+      AGE_RESTRICT, ADD_WARNING, ESCALATE. Partial credit for correct intent
+      even if action severity is slightly off.
+
+  - id: adversarial_moderation
+    name: Adversarial & Evasion Detection
+    difficulty: hard
+    description: >
+      Posts contain obfuscation, dog-whistles, coded language, and policy-
+      boundary probing. Agent must detect evasion attempts and correctly
+      classify subtle violations. Penalises both over- and under-moderation.
+
+action_space:
+  type: object
+  properties:
+    action:
+      type: string
+      enum: [APPROVE, REMOVE, AGE_RESTRICT, ADD_WARNING, ESCALATE, REQUEST_CONTEXT]
+    label:
+      type: string
+      enum: [SAFE, VIOLATING, BORDERLINE, SPAM, HARASSMENT, HATE_SPEECH, MISINFORMATION, SELF_HARM, EXPLICIT, EVASION]
+    confidence:
+      type: number
+      minimum: 0.0
+      maximum: 1.0
+    reasoning:
+      type: string
+      description: Agent's explanation for the decision
+
+observation_space:
+  type: object
+  properties:
+    post_id:
+      type: string
+    content:
+      type: string
+    author_history:
+      type: object
+    platform_context:
+      type: object
+    queue_position:
+      type: integer
+    queue_size:
+      type: integer
+    step:
+      type: integer
+    score:
+      type: number
+    episode_done:
+      type: boolean
